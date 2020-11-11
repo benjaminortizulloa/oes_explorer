@@ -1,7 +1,7 @@
+library(magrittr)
 # oes <- unzip('../data/oes_prod.zip')
 # oes <- read.csv(oes, stringsAsFactors = F, check.names = F)
 oes <- read.csv('../data/oes_prod.csv', stringsAsFactors = F, check.names = F)
-oes$naics[1400:1700]
 
 
 filterOES <- function(dta, state = NULL, naicsCode = NULL, industry = NULL, occupation = NULL){
@@ -28,7 +28,10 @@ getStateSector <- function(dta, state, industry = 'sector', occupation = '00-000
     )
 }
 
-getStateSector(oes, 'Pennsylvania')
+penn <- getStateSector(oes, 'Pennsylvania')
+
+dplyr::bind_rows(dplyr::select(penn, area_title, naics, tot_emp), data.frame(area_title = '', naics = 'Pennsylvania')) %>%
+  jsonlite::toJSON()
 
 
 # children of naic
