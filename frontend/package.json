@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "d3-hierarchy": "^2.0.0",
     "d3-selection": "^2.0.0",
     "d3-transition": "^2.0.0",
     "vue": "^2.6.10",
