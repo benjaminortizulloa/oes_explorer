@@ -7,7 +7,12 @@
         ref="treeContainer"
       >
         <div class="pa-0 ma-0" style="height: 100%;">
-          <GridSvg @stateClick="stateClick" @stateOver="stateOver" :width="width" :height="height"/>
+          <GridSvg
+            @stateClick="stateClick"
+            @setTooltip="setTooltip"
+            :width="width"
+            :height="height"
+          />
         </div>
       </div>
 
@@ -35,8 +40,8 @@ export default {
     stateClick(state) {
       this.infoTxt = JSON.stringify(state);
     },
-    stateOver(state) {
-      this.$emit("stateOver", state);
+    setTooltip(tooltip) {
+      this.$emit("setTooltip", tooltip);
     },
     matchDiv() {
       console.log(this.$refs.treeContainer);

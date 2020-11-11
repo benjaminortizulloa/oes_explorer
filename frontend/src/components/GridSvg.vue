@@ -29,7 +29,14 @@
       text-anchor="middle"
       style="pointer-events: none;"
     >{{state.code}}</text>
-    <Treemap :data="fakeData" :x="treeX" :y="treeY" :width="treeWidth" :height="treeHeight"></Treemap>
+    <Treemap
+      :data="fakeData"
+      :x="treeX"
+      :y="treeY"
+      :width="treeWidth"
+      :height="treeHeight"
+      @leafOver="leafOver"
+    ></Treemap>
   </svg>
 </template>
 
@@ -112,12 +119,15 @@ export default {
 
       this.$emit("stateClick", state);
     },
+    leafOver(leaf) {
+      this.$emit("setTooltip", leaf);
+    },
     stateOver(state, event) {
       let dta = { data: state, event: event, type: "state" };
-      this.$emit("stateOver", dta);
+      this.$emit("setTooltip", dta);
     },
     stateOut() {
-      this.$emit("stateOver", { data: null, event: null, type: null });
+      this.$emit("setTooltip", { data: null, event: null, type: null });
     }
   }
 };

@@ -6,8 +6,21 @@ usa_states <- usa %>%
   dplyr::mutate(state = stringr::str_replace(state, 'DC', 'District of Columbia')) %>%
   dplyr::select(-id, -publication)
 
-usa_states[which(usa_states$code == 'HI'),]$state <- 'Guam'
-usa_states[which(usa_states$code == 'HI'),]$code <- 'GU'
+usa_states[which(usa_states$code == 'HI'),]$state = 'Guam'
+usa_states[which(usa_states$code == 'HI'),]$code = 'GU'
+usa_states[which(usa_states$code == 'FL'),]
+usa_states[which(usa_states$code == 'MA'),]
+usa_states[which(usa_states$code == 'GU'),]
+
+addStates <- data.frame(
+  state = c("Virgin Islands", "Puerto Rico", "Hawaii"),
+  code = c('VI', 'PR', 'HI'),
+  col = c(13, 13, 2),
+  row = c(8, 7, 7)
+)
+
+usa_states <- rbind(usa_states, addStates) %>%
+  dplyr::arrange(state)
 
 usa_states %>%
   jsonlite::write_json('../data/npr_usa_grid.json')

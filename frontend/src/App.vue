@@ -7,7 +7,7 @@
     </v-app-bar>
 
     <v-main>
-      <Home @stateOver="setTooltip"/>
+      <Home @setTooltip="setTooltip"/>
       <Tooltip :tooltip="tooltip"/>
     </v-main>
   </v-app>
@@ -29,6 +29,8 @@ export default {
   }),
   methods: {
     setTooltip(data) {
+      console.log("inside app", data);
+      console.log("inside app", JSON.stringify(data));
       this.tooltip = data;
     }
   }

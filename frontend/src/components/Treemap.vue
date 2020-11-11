@@ -1,5 +1,6 @@
 <template>
   <g v-if="(leaves)" :transform="`translate(${x}, ${y})`">
+    <rect :width="width" :height="height" fill-opacity="0"/>
     <rect
       v-for="(leaf, i) in leaves"
       :key="i"
@@ -9,6 +10,8 @@
       :height="leaf.y1 - leaf.y0"
       fill="grey"
       fill-opacity=".9"
+      @mousemove="leafOver(leaf, $event)"
+      @mouseout="leafOut"
     />
   </g>
 </template>
@@ -53,6 +56,19 @@ export default {
         .paddingTop(pTop)(root);
       console.log("leaves", root.leaves());
       return root.leaves();
+    }
+  },
+  methods: {
+    leafOver(leaf, event) {
+      let clone = Object.assign({}, leaf);
+      delete clone.parent;
+      let dta = { data: clone, event: event, type: "leaf" };
+      console.log("leaf", leaf);
+      console.log("clone", clone);
+      this.$emit("leafOver", dta);
+    },
+    leafOut() {
+      this.$emit("leafOver", { data: null, event: null, type: null });
     }
   }
 };
