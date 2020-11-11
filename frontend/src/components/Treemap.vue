@@ -28,15 +28,15 @@ export default {
       if (!(!!this.x & !!this.y & !!this.width & !!this.height)) return null;
       let strat = stratify()
         .id(function(d) {
-          return d.child;
+          return d.naics;
         })
         .parentId(function(d) {
-          return d.parent;
+          return d.area_title;
         });
 
       let root = strat(this.data);
       root.sum(function(d) {
-        return +d.wt;
+        return +d.tot_emp;
       });
 
       let p;
