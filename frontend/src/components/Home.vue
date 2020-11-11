@@ -44,7 +44,6 @@ export default {
       this.$emit("setTooltip", tooltip);
     },
     matchDiv() {
-      console.log(this.$refs.treeContainer);
       this.width = this.$refs.treeContainer.clientWidth;
       this.height = this.$refs.treeContainer.clientHeight;
     }

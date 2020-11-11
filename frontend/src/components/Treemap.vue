@@ -1,6 +1,14 @@
 <template>
   <g v-if="(leaves)" :transform="`translate(${x}, ${y})`">
     <rect :width="width" :height="height" fill-opacity="0"/>
+    <circle
+      :cx="paddingTop + paddingTop/10"
+      :cy="paddingTop/2"
+      :r="paddingTop/2 - paddingTop/10 * 2"
+      fill="lightgrey"
+      stroke="none"
+      @click="exitClick"
+    />
     <rect
       v-for="(leaf, i) in leaves"
       :key="i"
@@ -8,10 +16,11 @@
       :y="leaf.y0"
       :width="leaf.x1 - leaf.x0"
       :height="leaf.y1 - leaf.y0"
-      fill="grey"
+      :fill="fill"
       fill-opacity=".9"
       @mousemove="leafOver(leaf, $event)"
-      @mouseout="leafOut"
+      @mouseout="leafOut(leaf, $event)"
+      @click="leafClick(leaf, $event)"
     />
   </g>
 </template>
@@ -24,9 +33,22 @@ import { stratify, treemap } from "d3-hierarchy";
 
 export default {
   name: "Treemap",
-  props: ["data", "x", "y", "width", "height"],
+  props: [
+    "data",
+    "x",
+    "y",
+    "width",
+    "height",
+    "leafClick",
+    "leafOver",
+    "leafOut",
+    "fill"
+  ],
   data: () => ({}),
   computed: {
+    paddingTop() {
+      return this.height / 10;
+    },
     leaves() {
       if (!(!!this.x & !!this.y & !!this.width & !!this.height)) return null;
       let strat = stratify()
@@ -49,26 +71,18 @@ export default {
       } else {
         p = this.width / 100;
       }
-      let pTop = this.height / 10;
+      let pTop = this.paddingTop;
       treemap()
         .size([this.width, this.height])
         .padding(p)
         .paddingTop(pTop)(root);
-      console.log("leaves", root.leaves());
+
       return root.leaves();
     }
   },
   methods: {
-    leafOver(leaf, event) {
-      let clone = Object.assign({}, leaf);
-      delete clone.parent;
-      let dta = { data: clone, event: event, type: "leaf" };
-      console.log("leaf", leaf);
-      console.log("clone", clone);
-      this.$emit("leafOver", dta);
-    },
-    leafOut() {
-      this.$emit("leafOver", { data: null, event: null, type: null });
+    exitClick() {
+      this.$emit("exitClick");
     }
   }
 };

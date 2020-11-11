@@ -29,8 +29,6 @@ export default {
   }),
   methods: {
     setTooltip(data) {
-      console.log("inside app", data);
-      console.log("inside app", JSON.stringify(data));
       this.tooltip = data;
     }
   }
