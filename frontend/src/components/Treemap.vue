@@ -50,7 +50,24 @@ export default {
       return this.height / 10;
     },
     leaves() {
-      if (!(!!this.x & !!this.y & !!this.width & !!this.height)) return null;
+      console.log(
+        "leaves",
+        !(
+          (!!this.x | (this.x == 0)) &
+          (!!this.y | (this.y == 0)) &
+          !!this.width &
+          !!this.height
+        )
+      );
+      if (
+        !(
+          (!!this.x | (this.x == 0)) &
+          (!!this.y | (this.y == 0)) &
+          !!this.width &
+          !!this.height
+        )
+      )
+        return null;
       let strat = stratify()
         .id(function(d) {
           return d.naics;

@@ -61,7 +61,7 @@ export default {
   props: ["width", "height"],
   components: { Treemap },
   data: () => ({
-    viewBoxes: [null, null],
+    viewBoxes: [null],
     viewBoxIndex: 0,
     treeX: [null],
     treeY: [null],
@@ -141,6 +141,8 @@ export default {
         .attr("viewBox", this.viewBoxes[this.viewBoxIndex]);
     },
     stateClick(state, event) {
+      console.log("event", event);
+      console.log("event target", event.target);
       this.zoomIn(event, 1);
       this.$emit("stateClick", state);
     },
