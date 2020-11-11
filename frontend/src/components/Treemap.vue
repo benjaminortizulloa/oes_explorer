@@ -38,7 +38,6 @@ export default {
     "y",
     "width",
     "height",
-    "leafClick",
     "leafOver",
     "leafOut",
     "fill",
@@ -50,15 +49,6 @@ export default {
       return this.height / 10;
     },
     leaves() {
-      console.log(
-        "leaves",
-        !(
-          (!!this.x | (this.x == 0)) &
-          (!!this.y | (this.y == 0)) &
-          !!this.width &
-          !!this.height
-        )
-      );
       if (
         !(
           (!!this.x | (this.x == 0)) &
@@ -66,8 +56,13 @@ export default {
           !!this.width &
           !!this.height
         )
-      )
+      ) {
         return null;
+      }
+
+      if (!this.data.length) {
+        return null;
+      }
       let strat = stratify()
         .id(function(d) {
           return d.naics;
@@ -100,6 +95,14 @@ export default {
   methods: {
     exitClick() {
       this.$emit("exitClick");
+    },
+    leafClick(leaf, event, treeIndex) {
+      console.log("leafclick");
+      this.$emit("leafClick", {
+        leaf: leaf,
+        event: event,
+        treeIndex: treeIndex + 1
+      });
     }
   }
 };

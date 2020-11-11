@@ -49,7 +49,7 @@ oes_no_na <- oes %>%
   )
 
 readr::write_csv(oes_no_na, '../data/oes_clean_nona.csv')
-oes_no_na <- readr::read_csv('../data/oes_clean_nona.csv')
+oes_no_na <- read.csv('../data/oes_clean_nona.csv', stringsAsFactors = F, check.names = F)
 oes_only_main <- oes_no_na %>%
   # dplyr::filter(!area_title %in% c('Puerto Rico', 'Virgin Islands', 'Guam')) %>%
   dplyr::select(-annual, -hourly, -naics_head)

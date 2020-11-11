@@ -35,13 +35,13 @@
     <Treemap
       v-for="i in 3"
       :key="`tree_${i}`"
-      :data="fakeData"
+      :data="stateTree"
       :treeIndex="i"
       :x="treeX[i]"
       :y="treeY[i]"
       :width="treeWidth[i]"
       :height="treeHeight[i]"
-      :leafClick="leafClick"
+      @leafClick="leafClick"
       :leafOver="leafOver"
       :leafOut="leafOut"
       @exitClick="exitClick(i)"
@@ -55,6 +55,7 @@ import Treemap from "@/components/Treemap";
 import { gridMap } from "@/components/mixins/gridMap.js";
 import { select, attr } from "d3-selection";
 import { transition } from "d3-transition";
+import axios from "axios";
 
 export default {
   name: "gridsSvg",
@@ -68,6 +69,7 @@ export default {
     treeWidth: [null],
     treeHeight: [null],
     fillColors: [null, "#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e"],
+    currentState: [],
     fakeData: [
       { area_title: "Pennsylvania", naics: "62", tot_emp: 1040850 },
       { area_title: "Pennsylvania", naics: "44-45", tot_emp: 619940 },
@@ -102,6 +104,23 @@ export default {
     },
     baseViewBox() {
       return `0 0 ${this.width} ${this.height}`;
+    },
+    stateTree() {
+      if (!this.currentState.length) return [];
+      const keys_to_keep = ["area_title", "naics", "tot_emp"];
+
+      let treeData = this.currentState.map(o =>
+        keys_to_keep.reduce((acc, curr) => {
+          acc[curr] = o[curr];
+          return acc;
+        }, {})
+      );
+
+      treeData = treeData.concat([
+        { area_title: "", naics: treeData[0].area_title }
+      ]);
+
+      return treeData;
     }
   },
   watch: {
@@ -159,10 +178,19 @@ export default {
         .attr("viewBox", this.viewBoxes[this.viewBoxIndex]);
     },
     stateClick(state, event) {
-      console.log("event", event);
-      console.log("event target", event.target);
-      this.zoomIn(event, 1);
-      this.$emit("stateClick", state);
+      let that = this;
+      axios
+        .get(`${process.env.VUE_APP_API}/state?state=${state.state}`)
+        .then(function(d) {
+          that.currentState = d.data;
+        })
+        .then(function(d) {
+          that.zoomIn(event, 1);
+          that.$emit("stateClick", state);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     leafOver(leaf, event) {
       let clone = Object.assign({}, leaf);
@@ -181,8 +209,9 @@ export default {
     stateOut() {
       this.$emit("setTooltip", { data: null, event: null, type: null });
     },
-    leafClick(data, event, index) {
-      this.zoomIn(event, index + 1);
+    leafClick(data) {
+      console.log(data);
+      this.zoomIn(data.event, data.treeIndex);
     },
     exitClick(index) {
       this.viewBoxIndex = index - 1;
