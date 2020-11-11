@@ -257,5 +257,19 @@ export const gridMap = {
             "col": 13,
             "row": 3
         }]
-    })
+    }),
+    computed: {
+        maxRow() {
+            return Math.max(...this.states.map(d => d.row))
+        },
+        maxCol() {
+            return Math.max(...this.states.map(d => d.col))
+        },
+        minRow() {
+            return Math.min(...this.states.map(d => d.row))
+        },
+        minCol() {
+            return Math.min(...this.states.map(d => d.col))
+        }
+    }
 };

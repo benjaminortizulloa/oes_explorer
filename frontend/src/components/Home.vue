@@ -3,7 +3,7 @@
     <v-row class="text-center" style="height: 100%;">
       <v-spacer></v-spacer>
       <v-col cols="10" style="background: blue;">
-        <svg width="100%" height="100%"></svg>
+        <GridSvg/>
       </v-col>
       <v-spacer></v-spacer>
     </v-row>
@@ -11,11 +11,10 @@
 </template>
 
 <script>
-import { gridMap } from "@/components/mixins/gridMap.js";
-
+import GridSvg from "@/components/GridSvg";
 export default {
   name: "Home",
-  data: () => ({}),
-  mixins: [gridMap]
+  components: { GridSvg },
+  data: () => ({})
 };
 </script>
