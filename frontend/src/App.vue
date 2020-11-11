@@ -7,23 +7,29 @@
     </v-app-bar>
 
     <v-main>
-      <Home/>
+      <Home @stateOver="setTooltip"/>
+      <Tooltip :tooltip="tooltip"/>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import Home from "./components/Home";
-
+import Tooltip from "./components/Tooltip";
 export default {
   name: "App",
 
   components: {
-    Home
+    Home,
+    Tooltip
   },
-
   data: () => ({
-    //
-  })
+    tooltip: { data: null, event: null, type: null }
+  }),
+  methods: {
+    setTooltip(data) {
+      this.tooltip = data;
+    }
+  }
 };
 </script>

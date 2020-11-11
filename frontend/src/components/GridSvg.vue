@@ -8,7 +8,9 @@
       :x="(state.col -minCol) * stateWidth"
       :y="(state.row - minRow) * stateHeight"
       stroke="grey"
-      @click="stateClick(state)"
+      @click="stateClick(state, $event)"
+      @mousemove="stateOver(state, $event)"
+      @mouseout="stateOut"
     ></rect>
     <text
       v-for="(state, i) in states"
@@ -19,6 +21,7 @@
       :y="(state.row - minRow) * stateHeight + stateHeight/2"
       fill="white"
       text-anchor="middle"
+      style="pointer-events: none;"
     >{{state.code}}</text>
   </svg>
 </template>
@@ -46,8 +49,16 @@ export default {
       this.width = this.$refs.gridSvg.clientWidth;
       this.height = this.$refs.gridSvg.clientHeight;
     },
-    stateClick(state) {
+    stateClick(state, event) {
+      console.log(event);
       this.$emit("stateClick", state);
+    },
+    stateOver(state, event) {
+      let dta = { data: state, event: event, type: "state" };
+      this.$emit("stateOver", dta);
+    },
+    stateOut() {
+      this.$emit("stateOver", { data: null, event: null, type: null });
     }
   },
   mounted() {
