@@ -6,6 +6,8 @@ usa_states <- usa %>%
   dplyr::mutate(state = stringr::str_replace(state, 'DC', 'District of Columbia')) %>%
   dplyr::select(-id, -publication)
 
+usa_states[which(usa_states$code == 'HI'),]$state <- 'Guam'
+usa_states[which(usa_states$code == 'HI'),]$code <- 'GU'
 
 usa_states %>%
   jsonlite::write_json('../data/npr_usa_grid.json')
