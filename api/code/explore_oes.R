@@ -1,7 +1,7 @@
 library(magrittr)
-oes <- unzip('../data/oes_prod.zip')
-oes <- read.csv(oes, stringsAsFactors = F, check.names = F)
-# oes <- read.csv('../data/oes_prod.csv', stringsAsFactors = F, check.names = F)
+# oes <- unzip('../data/oes_prod.zip')
+# oes <- read.csv(oes, stringsAsFactors = F, check.names = F)
+oes <- read.csv('../data/oes_prod.csv', stringsAsFactors = F, check.names = F)
 
 
 filterOES <- function(dta, state = NULL, naicsCode = NULL, industry = NULL, occupation = NULL){
