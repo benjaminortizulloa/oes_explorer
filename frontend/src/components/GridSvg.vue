@@ -120,6 +120,11 @@ export default {
           ? this.treeX[index - 1] + event.target.x.baseVal.value
           : event.target.x.baseVal.value
       );
+
+      if (this.treeX.length > index + 1) {
+        this.treeX.splice(index + 1, this.treeX.length - index - 1);
+      }
+
       this.treeY.splice(
         index,
         1,
@@ -127,8 +132,21 @@ export default {
           ? this.treeY[index - 1] + event.target.y.baseVal.value
           : event.target.y.baseVal.value
       );
+
+      if (this.treeY.length > index + 1) {
+        this.treeY.splice(index + 1, this.treeY.length - index - 1);
+      }
+
       this.treeWidth.splice(index, 1, event.target.width.baseVal.value);
+
+      if (this.treeWidth.length > index + 1) {
+        this.treeWidth.splice(index + 1, this.treeWidth.length - index - 1);
+      }
       this.treeHeight.splice(index, 1, event.target.height.baseVal.value);
+
+      if (this.treeHeight.length > index + 1) {
+        this.treeHeight.splice(index + 1, this.treeHeight.length - index - 1);
+      }
 
       this.viewBoxes[index] = `${this.treeX[index]} ${this.treeY[index]} ${
         this.treeWidth[index]
@@ -163,11 +181,8 @@ export default {
     stateOut() {
       this.$emit("setTooltip", { data: null, event: null, type: null });
     },
-    leafClick(d, e, i) {
-      console.log("d", d);
-      console.log("e", e);
-      console.log("i", i);
-      this.zoomIn(e, i + 1);
+    leafClick(data, event, index) {
+      this.zoomIn(event, index + 1);
     },
     exitClick(index) {
       this.viewBoxIndex = index - 1;
