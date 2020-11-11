@@ -1,7 +1,9 @@
 <template>
-  <v-card v-if="tooltip.type" :style="tooltipStyle" class="pa-2">
-    <p>{{JSON.stringify(tooltip)}}</p>
-  </v-card>
+  <transition name="fade">
+    <v-card v-if="tooltip.type" :style="tooltipStyle" class="pa-2">
+      <p>{{JSON.stringify(tooltip)}}</p>
+    </v-card>
+  </transition>
 </template>
 
 <script>
@@ -33,3 +35,15 @@ export default {
   methods: {}
 };
 </script>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease-out;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
+

@@ -1,14 +1,23 @@
 <template>
   <v-card style="height: 100%; width: 100%; position: absolute;">
-    <v-row style="top: 5%; left: 2%; height: 90%; width: 96%; position: absolute;">
-      <v-col cols="9" style="border: solid black 3px;" fill-height>
-        <GridSvg @stateClick="stateClick" @stateOver="stateOver"/>
-      </v-col>
-      <v-spacer></v-spacer>
-      <v-col cols="3" style="border: solid black 3px;">
+    <div style="top: 5%; left: 2%; height: 90%; width: 96%; position: absolute;">
+      <div
+        style="position: absolute; border: solid black 3px; height: 100%; width: 65%"
+        class="pa-0"
+        ref="treeContainer"
+      >
+        <div class="pa-0 ma-0" style="height: 100%;">
+          <GridSvg @stateClick="stateClick" @stateOver="stateOver" :width="width" :height="height"/>
+        </div>
+      </div>
+
+      <div
+        cols="3"
+        style="position: absolute; border: solid black 3px; height: 100%; width: 30%; right: 0;"
+      >
         <p>{{infoTxt}}</p>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
   </v-card>
 </template>
 
@@ -18,7 +27,9 @@ export default {
   name: "Home",
   components: { GridSvg },
   data: () => ({
-    infoTxt: ""
+    infoTxt: "",
+    width: 0,
+    height: 0
   }),
   methods: {
     stateClick(state) {
@@ -26,7 +37,21 @@ export default {
     },
     stateOver(state) {
       this.$emit("stateOver", state);
+    },
+    matchDiv() {
+      console.log(this.$refs.treeContainer);
+      this.width = this.$refs.treeContainer.clientWidth;
+      this.height = this.$refs.treeContainer.clientHeight;
     }
+  },
+  mounted() {
+    this.matchDiv();
+  },
+  created() {
+    window.addEventListener("resize", this.matchDiv);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.matchDiv);
   }
 };
 </script>

@@ -16,6 +16,7 @@
 <script>
 import Home from "./components/Home";
 import Tooltip from "./components/Tooltip";
+
 export default {
   name: "App",
 
