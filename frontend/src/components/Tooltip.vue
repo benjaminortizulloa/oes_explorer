@@ -17,7 +17,8 @@ export default {
         width: "25%",
         backgroundColor: "lightgrey",
         left: this.tooltip.event.clientX + "px",
-        position: "fixed"
+        position: "fixed",
+        pointerEvents: "none"
       };
 
       if (this.tooltip.event.clientY > window.innerHeight / 2) {

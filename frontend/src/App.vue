@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app style="background-color: purple;" dark>
       <v-spacer></v-spacer>
       <h1>OES Explorer [2019]</h1>
       <v-spacer></v-spacer>
