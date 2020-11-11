@@ -6,55 +6,46 @@
     preserveAspectRatio="xMidYMid meet"
     ref="gridSvg"
   >
-    <rect
-      v-for="(state, i) in states"
-      :key="'staterect_' + i"
-      :width="stateWidth"
-      :height="stateHeight"
-      :x="(state.col -minCol) * stateWidth"
-      :y="(state.row - minRow) * stateHeight"
-      stroke="grey"
-      stroke-width="1"
-      @click="stateClick(state, $event)"
-      @mousemove="stateOver(state, $event)"
-      @mouseout="stateOut"
-    ></rect>
-    <text
-      v-for="(state, i) in states"
-      :key="'statetext_' +i"
-      :width="stateWidth"
-      :height="stateHeight"
-      :x="(state.col -minCol) * stateWidth + stateWidth/2"
-      :y="(state.row - minRow) * stateHeight + stateHeight/2"
-      fill="white"
-      text-anchor="middle"
-      style="pointer-events: none;"
-    >{{state.code}}</text>
+    <g>
+      <rect
+        v-for="(state, i) in states"
+        :key="'staterect_' + i"
+        :width="stateWidth"
+        :height="stateHeight"
+        :x="(state.col -minCol) * stateWidth"
+        :y="(state.row - minRow) * stateHeight"
+        stroke="grey"
+        stroke-width="1"
+        @click="stateClick(state, $event)"
+        @mousemove="stateOver(state, $event)"
+        @mouseout="stateOut"
+      ></rect>
+      <text
+        v-for="(state, i) in states"
+        :key="'statetext_' +i"
+        :width="stateWidth"
+        :height="stateHeight"
+        :x="(state.col -minCol) * stateWidth + stateWidth/2"
+        :y="(state.row - minRow) * stateHeight + stateHeight/2"
+        fill="white"
+        text-anchor="middle"
+        style="pointer-events: none;"
+      >{{state.code}}</text>
+    </g>
     <Treemap
+      v-for="i in 3"
+      :key="`tree_${i}`"
       :data="fakeData"
-      :treeIndex="1"
-      :x="treeX[1]"
-      :y="treeY[1]"
-      :width="treeWidth[1]"
-      :height="treeHeight[1]"
+      :treeIndex="i"
+      :x="treeX[i]"
+      :y="treeY[i]"
+      :width="treeWidth[i]"
+      :height="treeHeight[i]"
       :leafClick="leafClick"
       :leafOver="leafOver"
       :leafOut="leafOut"
-      @exitClick="exitClick(1)"
-      fill="lightgrey"
-    ></Treemap>
-    <Treemap
-      :data="fakeData"
-      :treeIndex="2"
-      :x="treeX[2]"
-      :y="treeY[2]"
-      :width="treeWidth[2]"
-      :height="treeHeight[2]"
-      :leafClick="leafClick"
-      :leafOver="leafOver"
-      :leafOut="leafOut"
-      @exitClick="exitClick(2)"
-      fill="skyblue"
+      @exitClick="exitClick(i)"
+      :fill="fillColors[i]"
     ></Treemap>
   </svg>
 </template>
@@ -70,12 +61,13 @@ export default {
   props: ["width", "height"],
   components: { Treemap },
   data: () => ({
-    viewBoxes: [null, null, null],
+    viewBoxes: [null, null],
     viewBoxIndex: 0,
-    treeX: [null, null, null],
-    treeY: [null, null, null],
-    treeWidth: [null, null, null],
-    treeHeight: [null, null, null],
+    treeX: [null],
+    treeY: [null],
+    treeWidth: [null],
+    treeHeight: [null],
+    fillColors: [null, "#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e"],
     fakeData: [
       { area_title: "Pennsylvania", naics: "62", tot_emp: 1040850 },
       { area_title: "Pennsylvania", naics: "44-45", tot_emp: 619940 },
