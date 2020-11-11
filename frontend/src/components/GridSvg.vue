@@ -2,20 +2,21 @@
   <svg id="gridSvg" width="100%" height="100%" ref="gridSvg">
     <rect
       v-for="(state, i) in states"
-      :key="i"
+      :key="'staterect_' + i"
       :width="stateWidth"
       :height="stateHeight"
       :x="(state.col -minCol) * stateWidth"
       :y="(state.row - minRow) * stateHeight"
       stroke="grey"
+      @click="stateClick(state)"
     ></rect>
     <text
       v-for="(state, i) in states"
-      :key="i"
+      :key="'statetext_' +i"
       :width="stateWidth"
       :height="stateHeight"
-      :x="(state.col -1) * stateWidth + stateWidth/2"
-      :y="(state.row - 1) * stateHeight + stateHeight/2"
+      :x="(state.col -minCol) * stateWidth + stateWidth/2"
+      :y="(state.row - minRow) * stateHeight + stateHeight/2"
       fill="white"
       text-anchor="middle"
     >{{state.code}}</text>
@@ -44,6 +45,9 @@ export default {
     matchSvg() {
       this.width = this.$refs.gridSvg.clientWidth;
       this.height = this.$refs.gridSvg.clientHeight;
+    },
+    stateClick(state) {
+      this.$emit("stateClick", state);
     }
   },
   mounted() {

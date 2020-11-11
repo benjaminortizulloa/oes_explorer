@@ -260,10 +260,10 @@ export const gridMap = {
     }),
     computed: {
         maxRow() {
-            return Math.max(...this.states.map(d => d.row))
+            return Math.max(...this.states.map(d => d.row)) + 1
         },
         maxCol() {
-            return Math.max(...this.states.map(d => d.col))
+            return Math.max(...this.states.map(d => d.col)) + 1
         },
         minRow() {
             return Math.min(...this.states.map(d => d.row))
