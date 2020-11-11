@@ -5,8 +5,7 @@
       :cx="paddingTop + paddingTop/10"
       :cy="paddingTop/2"
       :r="paddingTop/2 - paddingTop/10 * 2"
-      fill="lightgrey"
-      stroke="none"
+      :fill="fill"
       @click="exitClick"
     />
     <rect
@@ -20,7 +19,7 @@
       fill-opacity=".9"
       @mousemove="leafOver(leaf, $event)"
       @mouseout="leafOut(leaf, $event)"
-      @click="leafClick(leaf, $event)"
+      @click="leafClick(leaf, $event, treeIndex)"
     />
   </g>
 </template>
@@ -42,7 +41,8 @@ export default {
     "leafClick",
     "leafOver",
     "leafOut",
-    "fill"
+    "fill",
+    "treeIndex"
   ],
   data: () => ({}),
   computed: {

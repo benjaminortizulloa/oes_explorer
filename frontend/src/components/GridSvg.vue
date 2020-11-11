@@ -32,6 +32,7 @@
     >{{state.code}}</text>
     <Treemap
       :data="fakeData"
+      :treeIndex="1"
       :x="treeX[1]"
       :y="treeY[1]"
       :width="treeWidth[1]"
@@ -41,6 +42,19 @@
       :leafOut="leafOut"
       @exitClick="exitClick(1)"
       fill="lightgrey"
+    ></Treemap>
+    <Treemap
+      :data="fakeData"
+      :treeIndex="2"
+      :x="treeX[2]"
+      :y="treeY[2]"
+      :width="treeWidth[2]"
+      :height="treeHeight[2]"
+      :leafClick="leafClick"
+      :leafOver="leafOver"
+      :leafOut="leafOut"
+      @exitClick="exitClick(2)"
+      fill="skyblue"
     ></Treemap>
   </svg>
 </template>
@@ -56,12 +70,12 @@ export default {
   props: ["width", "height"],
   components: { Treemap },
   data: () => ({
-    viewBoxes: [null, null],
+    viewBoxes: [null, null, null],
     viewBoxIndex: 0,
-    treeX: [null, null],
-    treeY: [null, null],
-    treeWidth: [null, null],
-    treeHeight: [null, null],
+    treeX: [null, null, null],
+    treeY: [null, null, null],
+    treeWidth: [null, null, null],
+    treeHeight: [null, null, null],
     fakeData: [
       { area_title: "Pennsylvania", naics: "62", tot_emp: 1040850 },
       { area_title: "Pennsylvania", naics: "44-45", tot_emp: 619940 },
@@ -106,22 +120,36 @@ export default {
     }
   },
   methods: {
-    stateClick(state, event) {
-      this.treeX.splice(1, 1, event.target.x.baseVal.value);
-      this.treeY.splice(1, 1, event.target.y.baseVal.value);
-      this.treeWidth.splice(1, 1, event.target.width.baseVal.value);
-      this.treeHeight.splice(1, 1, event.target.height.baseVal.value);
+    zoomIn(event, index) {
+      this.treeX.splice(
+        index,
+        1,
+        this.treeX[index - 1]
+          ? this.treeX[index - 1] + event.target.x.baseVal.value
+          : event.target.x.baseVal.value
+      );
+      this.treeY.splice(
+        index,
+        1,
+        this.treeY[index - 1]
+          ? this.treeY[index - 1] + event.target.y.baseVal.value
+          : event.target.y.baseVal.value
+      );
+      this.treeWidth.splice(index, 1, event.target.width.baseVal.value);
+      this.treeHeight.splice(index, 1, event.target.height.baseVal.value);
 
-      this.viewBoxes[1] = `${this.treeX[1]} ${this.treeY[1]} ${
-        this.treeWidth[1]
-      } ${this.treeHeight[1]}`;
-      this.viewBoxIndex = 1;
+      this.viewBoxes[index] = `${this.treeX[index]} ${this.treeY[index]} ${
+        this.treeWidth[index]
+      } ${this.treeHeight[index]}`;
+      this.viewBoxIndex = index;
 
       select(this.$refs.gridSvg)
         .transition()
         .duration(750)
         .attr("viewBox", this.viewBoxes[this.viewBoxIndex]);
-
+    },
+    stateClick(state, event) {
+      this.zoomIn(event, 1);
       this.$emit("stateClick", state);
     },
     leafOver(leaf, event) {
@@ -141,8 +169,11 @@ export default {
     stateOut() {
       this.$emit("setTooltip", { data: null, event: null, type: null });
     },
-    leafClick(d, e) {
-      console.log(d);
+    leafClick(d, e, i) {
+      console.log("d", d);
+      console.log("e", e);
+      console.log("i", i);
+      this.zoomIn(e, i + 1);
     },
     exitClick(index) {
       this.viewBoxIndex = index - 1;
