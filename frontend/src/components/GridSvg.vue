@@ -118,9 +118,7 @@ export default {
       select(this.$refs.gridSvg).attr("viewBox", this.viewBoxes[0]);
     },
     currentState(newVal) {
-      if (!newVal.data.length) {
-        this.treeData.splice(1, this.treeData.length - 1);
-      }
+      this.treeData.splice(1, this.treeData.length - (1 + 1));
 
       newVal.data = newVal.data.concat([
         { area_title: "", naics: newVal.data[0].area_title }
@@ -181,6 +179,7 @@ export default {
     },
     stateClick(state, event) {
       let that = this;
+
       axios
         .get(`${process.env.VUE_APP_API}/state?state=${state.state}`)
         .then(function(d) {
@@ -223,7 +222,7 @@ export default {
       this.treeY.splice(index, 1, null);
       this.treeWidth.splice(index, 1, null);
       this.treeHeight.splice(index, 1, null);
-      this.treeData.splice(index, 1, null);
+      this.treeData.splice(index, 1);
 
       select(this.$refs.gridSvg)
         .transition()
@@ -233,6 +232,7 @@ export default {
     leafFunctions(type, dta) {
       let that = this;
       let parent = dta.leaf.id;
+      that.treeData.splice(dta.treeIndex);
 
       if ((type == "state") | (type == "naics")) {
         console.log("stateleaffunction", dta);
@@ -251,8 +251,6 @@ export default {
               })
               .concat({ parent: "", naics: parent });
 
-            console.log("naics leaf", resData);
-            console.log("leafParent", that.leafParent);
             that.leafParent.splice(dta.treeIndex, 1, "parent");
             that.leafChild.splice(dta.treeIndex, 1, "naics");
 

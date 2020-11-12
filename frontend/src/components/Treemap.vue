@@ -67,7 +67,6 @@ export default {
         return null;
       }
 
-      console.log("tree data", this.data);
       if (!this.data) {
         return null;
       }
@@ -120,6 +119,9 @@ export default {
     this.$nextTick(function() {
       let myRef = `myTree${this.treeIndex}`;
       select(this.$refs[myRef])
+        .selectAll("text")
+        .attr("font-size", null);
+      select(this.$refs[myRef])
         .selectAll(".leaf")
         .select("text")
         .attr("font-size", function(d) {
@@ -132,7 +134,7 @@ export default {
           let heightTransform = rectBbox.height / txtBBox.height;
           let value =
             widthTransform < heightTransform ? widthTransform : heightTransform;
-          console.log(value);
+
           return `${value}em`;
           // return `matrix(${value}, 0, 0, ${value}, 0,0)`;
         });
