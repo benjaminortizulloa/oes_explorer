@@ -182,12 +182,13 @@ export default {
 
       axios
         .get(`${process.env.VUE_APP_API}/state?state=${state.state}`)
-        .then(function(d) {
-          that.currentState = d.data;
+        .then(function(res) {
+          that.currentState = res.data;
           that.zoomIn(event, 1);
+          return res;
         })
         .then(function(d) {
-          that.$emit("stateClick", state);
+          that.$emit("stateClick", d);
         })
         .catch(err => {
           console.log(err);
