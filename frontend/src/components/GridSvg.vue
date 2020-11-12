@@ -33,7 +33,7 @@
       >{{state.code}}</text>
     </g>
     <Treemap
-      v-for="i in 3"
+      v-for="(d,i) in treeData"
       :key="`tree_${i}`"
       :data="treeData[i]"
       :leafParent="leafParent[i]"

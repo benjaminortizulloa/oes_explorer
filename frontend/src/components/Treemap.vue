@@ -101,12 +101,14 @@ export default {
       this.$emit("exitClick");
     },
     leafClick(leaf, event, treeIndex) {
-      this.$emit("leafClick", {
-        leaf: leaf,
-        event: event,
-        treeIndex: treeIndex + 1,
-        type: this.data.type
-      });
+      if (leaf.data.hasChildren) {
+        this.$emit("leafClick", {
+          leaf: leaf,
+          event: event,
+          treeIndex: treeIndex + 1,
+          type: this.data.type
+        });
+      }
     }
   }
 };
