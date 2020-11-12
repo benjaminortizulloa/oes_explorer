@@ -1,5 +1,5 @@
 <template>
-  <g v-if="(leaves)" :transform="`translate(${x}, ${y})`">
+  <g v-if="(leaves)" :transform="`translate(${x}, ${y})`" :ref="`myTree${treeIndex}`">
     <rect :width="width" :height="height" fill-opacity="0"/>
     <circle
       :cx="paddingTop + paddingTop/10"
@@ -8,25 +8,30 @@
       :fill="fill"
       @click="exitClick"
     />
-    <rect
-      v-for="(leaf, i) in leaves"
-      :key="i"
-      :x="leaf.x0"
-      :y="leaf.y0"
-      :width="leaf.x1 - leaf.x0"
-      :height="leaf.y1 - leaf.y0"
-      :fill="fill"
-      fill-opacity=".9"
-      @mousemove="leafOver(leaf, $event)"
-      @mouseout="leafOut(leaf, $event)"
-      @click="leafClick(leaf, $event, treeIndex)"
-    />
+    <g v-for="(leaf, i) in leaves" :key="i" class="leaf">
+      <rect
+        :x="leaf.x0"
+        :y="leaf.y0"
+        :width="leaf.x1 - leaf.x0"
+        :height="leaf.y1 - leaf.y0"
+        :fill="fill"
+        fill-opacity=".9"
+        @mousemove="leafOver(leaf, $event)"
+        @mouseout="leafOut(leaf, $event)"
+        @click="leafClick(leaf, $event, treeIndex)"
+      />
+      <text
+        style="pointer-events: none"
+        :x="leaf.x0"
+        :y="leaf.y0 + (leaf.y1 - leaf.y0)/2"
+      >{{leaf.data.naics_title}}</text>
+    </g>
   </g>
 </template>
 
 <script>
 import { gridMap } from "@/components/mixins/gridMap.js";
-import { select, attr } from "d3-selection";
+import { select, selectAll, attr } from "d3-selection";
 import { transition } from "d3-transition";
 import { stratify, treemap } from "d3-hierarchy";
 
@@ -110,6 +115,28 @@ export default {
         });
       }
     }
+  },
+  created() {
+    this.$nextTick(function() {
+      let myRef = `myTree${this.treeIndex}`;
+      select(this.$refs[myRef])
+        .selectAll(".leaf")
+        .select("text")
+        .attr("font-size", function(d) {
+          let txtBBox = this.getBBox();
+          let rectBbox = select(this.parentNode)
+            .select("rect")
+            .node()
+            .getBBox();
+          let widthTransform = rectBbox.width / txtBBox.width;
+          let heightTransform = rectBbox.height / txtBBox.height;
+          let value =
+            widthTransform < heightTransform ? widthTransform : heightTransform;
+          console.log(value);
+          return `${value}em`;
+          // return `matrix(${value}, 0, 0, ${value}, 0,0)`;
+        });
+    });
   }
 };
 </script>
