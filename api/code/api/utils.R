@@ -15,3 +15,40 @@ filterOES <- function(dta, state = NULL, naicsCode = NULL, industry = NULL, occu
   
   return(dta)
 }
+
+childrenIndustries <- function(dta, naic, state, industry, occupation = 'total'){
+  nCode <- stringr::str_extract(naic, paste0('^.{', industry, '}'))
+  nCode <- paste0('^', nCode)
+  iGroup <- paste0(industry + 1, '-digit')
+  
+  children <- dta %>%
+    filterOES(state, nCode, iGroup, occupation)
+  
+  children
+}
+
+countChildrenIndustries <- function(dta, naic, state, industry, occupation = 'total'){
+  if(industry >= 6) return(0)
+  
+  nChildren <- childrenIndustries(dta, naic, state, industry, occupation) %>%
+    nrow()
+  
+  nChildren
+}
+
+industryOccupation <- function(dta, naic, state, industry, occupation){
+  nCode <- stringr::str_extract(naic, paste0('^.{', industry, '}'))
+  iGroup <- paste0(industry, '-digit')
+  
+  occupations <- dta %>%
+    filterOES(state, nCode, iGroup, occupation)
+  
+  occupations
+}
+
+countIndustryOccupation <- function(dta, naic, state, industry, occupation){
+  nOccupations <- industryOccupation(dta, naic, state, industry, occupation) %>%
+    nrow()
+  
+  nOccupations
+}

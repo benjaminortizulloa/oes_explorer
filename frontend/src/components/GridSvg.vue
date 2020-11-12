@@ -36,13 +36,13 @@
       v-for="i in 3"
       :key="`tree_${i}`"
       :data="treeData[i]"
+      :leafParent="leafParent[i]"
+      :leafChild="leafChild[i]"
       :treeIndex="i"
       :x="treeX[i]"
       :y="treeY[i]"
       :width="treeWidth[i]"
       :height="treeHeight[i]"
-      :leafParent="leafParent[i]"
-      :leafChild="leafChild[i]"
       @leafClick="leafClick"
       :leafOver="leafOver"
       :leafOut="leafOut"
@@ -234,11 +234,11 @@ export default {
       let that = this;
       let parent = dta.leaf.id;
 
-      if (type == "state") {
+      if ((type == "state") | (type == "naics")) {
         console.log("stateleaffunction", dta);
         let qry = `${process.env.VUE_APP_API}/naics?state=${
           dta.leaf.data.area_title
-        }&naicsCode=${dta.leaf.data.naics}&industry=3`;
+        }&naicsCode=${dta.leaf.data.naics}&industry=${dta.treeIndex + 1}`;
 
         axios
           .get(qry)
@@ -262,6 +262,9 @@ export default {
           .catch(err => {
             console.log(err);
           });
+      }
+
+      if (type == "naics") {
       }
     }
   },
