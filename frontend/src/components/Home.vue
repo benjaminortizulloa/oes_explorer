@@ -19,13 +19,14 @@
         style="position: absolute; border: solid black 3px; height: 100%; width: 30%; right: 0; "
         ref="sideContainer"
       >
-        <div height="50px">
-          <label style="margin:25px">Hourly</label>
+        <div v-if="info.length" style="text-align: center" height="50px">
+          <h2>{{info[0].area_title}}</h2>
+          <!-- <label style="margin:25px">Hourly</label>
           <label class="switch" style="margin: 15px;">
             <input type="checkbox" v-model="isAnnual">
             <span class="slider"></span>
           </label>
-          <label style="margin: 25px">Annually</label>
+          <label style="margin: 25px">Annually</label> -->
         </div>
         <SideBar
           :info="info"

@@ -197,19 +197,20 @@ export default {
     leafOver(leaf, event) {
       let clone = Object.assign({}, leaf);
       delete clone.parent;
-      let dta = { data: clone, event: event, type: "leaf" };
+
+      let dta = { data: clone, event: event, type: "message",  message: `${clone.data.area_title} \n${clone.data.naics_title} (${clone.data.naics}) \n\nTotal Employed: ${clone.data.tot_emp}\nMean Annual Salary: ${clone.data.a_mean ? clone.data.a_mean : clone.data.a_calc_mean}\nMedian Annual Salary: ${clone.data.a_median}\nMedian Hourly Salary: ${clone.data.h_mean ? clone.data.h_mean : clone.data.h_calc_mean}\nMedian Hourly Salary:${clone.data.h_median}\n\n${clone.data.hasChildren ? "Clickable" : "Not Clickable" }`};
 
       this.$emit("setTooltip", dta);
     },
     leafOut() {
-      this.$emit("setTooltip", { data: null, event: null, type: null });
+      this.$emit("setTooltip", { data: null, event: null, type: null, message: null });
     },
     stateOver(state, event) {
-      let dta = { data: state, event: event, type: "state" };
+      let dta = { data: state, event: event, type: "message", message: `Click to see which industries are prominant in ${state.state}`  };
       this.$emit("setTooltip", dta);
     },
     stateOut() {
-      this.$emit("setTooltip", { data: null, event: null, type: null });
+      this.$emit("setTooltip", { data: null, event: null, type: null, message: null });
     },
     leafClick(data) {
       console.log("leafClick", data);

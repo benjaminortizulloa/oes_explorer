@@ -63,18 +63,17 @@ export default {
   },
   watch: {
     height(newVal) {
-      console.log("newVal", newVal);
       this.$set(this.divStyle, "height", newVal + "px");
     }
   },
   methods: {
     mouseOver(data, event) {
-      let dta = { data: data, event: event, type: "bar" };
+      let dta = { data: data, event: event, type: "message", message: data };
 
       this.$emit("setTooltip", dta);
     },
     mouseOut() {
-      this.$emit("setTooltip", { data: null, event: null, type: null });
+      this.$emit("setTooltip", { data: null, event: null, type: null, message: null });
     },
     xLocation(d) {
       let that = this;

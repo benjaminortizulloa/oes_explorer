@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
-    <v-card v-if="tooltip.type" :style="tooltipStyle" class="pa-2">
-      <p>{{JSON.stringify(tooltip)}}</p>
+    <v-card v-if="tooltip.type == 'message'" :style="tooltipStyle" class="pa-2">
+      <p style="white-space: pre-line">{{tooltip.message}}</p>
     </v-card>
   </transition>
 </template>
@@ -18,7 +18,6 @@ export default {
       let style = {
         width: "25%",
         backgroundColor: "lightgrey",
-        left: this.tooltip.event.clientX + "px",
         position: "fixed",
         pointerEvents: "none"
       };
@@ -27,6 +26,12 @@ export default {
         style.bottom = window.innerHeight - this.tooltip.event.clientY + "px";
       } else {
         style.top = this.tooltip.event.clientY + "px";
+      }
+
+      if(this.tooltip.event.clientX > window.innerWidth /2){
+        style.right = window.innerWidth - this.tooltip.event.clientX + 'px'
+      } else {
+        style.left = this.tooltip.event.clientX + "px"
       }
 
       return style;
