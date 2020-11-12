@@ -41,7 +41,9 @@ export default {
     "leafOver",
     "leafOut",
     "fill",
-    "treeIndex"
+    "treeIndex",
+    "leafChild",
+    "leafParent"
   ],
   data: () => ({}),
   computed: {
@@ -60,18 +62,20 @@ export default {
         return null;
       }
 
-      if (!this.data.length) {
+      console.log("tree data", this.data);
+      if (!this.data) {
         return null;
       }
+      let that = this;
       let strat = stratify()
         .id(function(d) {
-          return d.naics;
+          return d[that.leafChild];
         })
         .parentId(function(d) {
-          return d.area_title;
+          return d[that.leafParent];
         });
 
-      let root = strat(this.data);
+      let root = strat(this.data.data);
       root.sum(function(d) {
         return +d.tot_emp;
       });
@@ -97,11 +101,11 @@ export default {
       this.$emit("exitClick");
     },
     leafClick(leaf, event, treeIndex) {
-      console.log("leafclick");
       this.$emit("leafClick", {
         leaf: leaf,
         event: event,
-        treeIndex: treeIndex + 1
+        treeIndex: treeIndex + 1,
+        type: this.data.type
       });
     }
   }

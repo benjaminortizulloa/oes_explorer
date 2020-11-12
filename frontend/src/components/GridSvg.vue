@@ -35,12 +35,14 @@
     <Treemap
       v-for="i in 3"
       :key="`tree_${i}`"
-      :data="stateTree"
+      :data="treeData[i]"
       :treeIndex="i"
       :x="treeX[i]"
       :y="treeY[i]"
       :width="treeWidth[i]"
       :height="treeHeight[i]"
+      :leafParent="leafParent[i]"
+      :leafChild="leafChild[i]"
       @leafClick="leafClick"
       :leafOver="leafOver"
       :leafOut="leafOut"
@@ -64,12 +66,15 @@ export default {
   data: () => ({
     viewBoxes: [null],
     viewBoxIndex: 0,
+    treeData: [null],
     treeX: [null],
     treeY: [null],
     treeWidth: [null],
     treeHeight: [null],
+    leafParent: [null],
+    leafChild: [null],
     fillColors: [null, "#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e"],
-    currentState: [],
+    currentState: null,
     fakeData: [
       { area_title: "Pennsylvania", naics: "62", tot_emp: 1040850 },
       { area_title: "Pennsylvania", naics: "44-45", tot_emp: 619940 },
@@ -104,23 +109,6 @@ export default {
     },
     baseViewBox() {
       return `0 0 ${this.width} ${this.height}`;
-    },
-    stateTree() {
-      if (!this.currentState.length) return [];
-      const keys_to_keep = ["area_title", "naics", "tot_emp"];
-
-      let treeData = this.currentState.map(o =>
-        keys_to_keep.reduce((acc, curr) => {
-          acc[curr] = o[curr];
-          return acc;
-        }, {})
-      );
-
-      treeData = treeData.concat([
-        { area_title: "", naics: treeData[0].area_title }
-      ]);
-
-      return treeData;
     }
   },
   watch: {
@@ -128,6 +116,20 @@ export default {
       select(this.$refs.gridSvg).attr("viewBox", null);
       this.viewBoxes[0] = newVal;
       select(this.$refs.gridSvg).attr("viewBox", this.viewBoxes[0]);
+    },
+    currentState(newVal) {
+      if (!newVal.data.length) {
+        this.treeData.splice(1, this.treeData.length - 1);
+      }
+
+      newVal.data = newVal.data.concat([
+        { area_title: "", naics: newVal.data[0].area_title }
+      ]);
+
+      this.leafChild.splice(1, 1, "naics");
+      this.leafParent.splice(1, 1, "area_title");
+
+      this.treeData.splice(1, 1, newVal);
     }
   },
   methods: {
@@ -183,9 +185,9 @@ export default {
         .get(`${process.env.VUE_APP_API}/state?state=${state.state}`)
         .then(function(d) {
           that.currentState = d.data;
+          that.zoomIn(event, 1);
         })
         .then(function(d) {
-          that.zoomIn(event, 1);
           that.$emit("stateClick", state);
         })
         .catch(err => {
@@ -210,8 +212,10 @@ export default {
       this.$emit("setTooltip", { data: null, event: null, type: null });
     },
     leafClick(data) {
-      console.log(data);
-      this.zoomIn(data.event, data.treeIndex);
+      console.log("leafClick", data);
+
+      this.leafFunctions(data.type, data);
+      if (data.type) this.zoomIn(data.event, data.treeIndex);
     },
     exitClick(index) {
       this.viewBoxIndex = index - 1;
@@ -219,11 +223,46 @@ export default {
       this.treeY.splice(index, 1, null);
       this.treeWidth.splice(index, 1, null);
       this.treeHeight.splice(index, 1, null);
+      this.treeData.splice(index, 1, null);
 
       select(this.$refs.gridSvg)
         .transition()
         .duration(750)
         .attr("viewBox", this.viewBoxes[this.viewBoxIndex]);
+    },
+    leafFunctions(type, dta) {
+      let that = this;
+      let parent = dta.leaf.id;
+
+      if (type == "state") {
+        console.log("stateleaffunction", dta);
+        let qry = `${process.env.VUE_APP_API}/naics?state=${
+          dta.leaf.data.area_title
+        }&naicsCode=${dta.leaf.data.naics}&industry=3`;
+
+        axios
+          .get(qry)
+          .then(function(res) {
+            let resData = res.data;
+            resData.data = resData.data
+              .map(function(d) {
+                d.parent = parent;
+                return d;
+              })
+              .concat({ parent: "", naics: parent });
+
+            console.log("naics leaf", resData);
+            console.log("leafParent", that.leafParent);
+            that.leafParent.splice(dta.treeIndex, 1, "parent");
+            that.leafChild.splice(dta.treeIndex, 1, "naics");
+
+            that.treeData.splice(dta.treeIndex, 1, resData);
+            that.zoomIn(dta.event, dta.treeIndex);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     }
   },
   mounted() {
